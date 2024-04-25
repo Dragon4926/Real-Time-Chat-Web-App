@@ -25,6 +25,7 @@ app.get('/', (req, res) => {
   res.sendFile('public/html/index.html',{root:__dirname})
 })
 
+
 io.on('connection', (socket) => {
   console.log('A user connected');
   socket.on('disconnect', () => {
