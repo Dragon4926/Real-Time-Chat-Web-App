@@ -11,7 +11,7 @@ const randomNumberGenerator = () => {
 };
 
 async function main() {
-    await mongoose.connect('mongodb+srv://satyaki:Uu9YFF2CTviJRNgB@realtimechatdb.tlzamdx.mongodb.net/roomdetails');
+    await mongoose.connect('Your Connection String/Databasename');
 }
 
 main().then(() => {
