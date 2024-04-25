@@ -6,25 +6,19 @@ const event = require('./routes/event')
 const joinroom = require('./routes/joinroom')
 const codeCheckRouter = require('./routes/codeCheck');
 
-
 const app = express()
 const server = createServer(app);
 const io = new Server(server);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-
 app.use('/event', event)
 app.use('/joinroom', joinroom)
-app.use('/codeCheck', codeCheckRouter); 
-
-app.use(express.static('public'))
+app.use('/codeCheck', codeCheckRouter);
 
 app.get('/', (req, res) => {
-  res.sendFile('public/html/index.html',{root:__dirname})
-})
-
+  res.sendFile('index.html', { root: __dirname + '/public/html' });
+});
 
 io.on('connection', (socket) => {
   console.log('A user connected');
@@ -39,6 +33,8 @@ io.on('connection', (socket) => {
     console.log('message: ' + msg);
   });
 });
-server.listen(3000, () => {
-  console.log('server running at http://localhost:3000');
+
+const port = process.env.PORT || 3000;
+server.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
 });
