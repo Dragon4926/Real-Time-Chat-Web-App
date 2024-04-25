@@ -1,0 +1,179 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+}
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.main > .innerBox {
+  width: 90vw;
+  height: 80vh;
+  margin: auto;
+  margin-top: 50px;
+  /* border: 2px black solid;
+  border-radius: 20px; */
+  display: flex;
+}
+.first {
+  background-color: black;
+  border-radius: 15px;
+  height: 100%;
+  width: 58px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 25px;
+}
+.first > .hamburger {
+  margin-top: 62px;
+  cursor: pointer;
+}
+.first > .create {
+  cursor: pointer;
+}
+.first > .join{
+  cursor: pointer;
+}
+.second {
+  background-color: rgb(161, 74, 74);
+  width: 300px;
+  position: relative;
+  right: 12px;
+}
+.second header > h1 {
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 3px;
+}
+.second main {
+  display: flex;
+  flex-direction: column;
+  height: 52px;
+  overflow: hidden;
+  overflow-x: hidden;
+}
+.object {
+  display: flex;
+  align-items: center;
+  width: 20vw;
+}
+.second main .object > h3 {
+  margin-top: 10px;
+}
+.second main .object > p {
+  margin-top: 12px;
+}
+.second main .object > .copy{
+  margin-top: 18px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+.object > .joinBtn{
+  margin: 10px 0 0 10px;
+
+}
+.object > .joinBtn button{
+  padding: 3px 8px 3px 8px;
+  border: 1px solid black;
+  border-radius: 8px;
+  cursor: pointer;
+}
+/* #form2{
+  display: none;
+} */
+.joinExistRoom{
+  margin: 60px 25px 25px 25px;
+}
+.joinExistRoom button{
+  padding: 6px 10px 6px 10px;
+  border: 1px solid whitesmoke;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+#input2{
+  padding: 4px;
+    border: 1px solid whitesmoke;
+    border-radius: 10px;
+    margin-right: 8px;
+}
+.third{
+  position: relative;
+  z-index: 2;
+  right: 11px;
+  background-color: #ececec;
+  width: 76%;
+}
+.joinedroom{
+  font-size: 18px;
+  font-weight: 600;
+  position: absolute;
+  left: 10px;
+  top: 16px;
+}
+.third > .head h1{
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 3px;
+}
+.mainContent > ul{
+  height: 64vh;
+  width: 100%;
+  overflow-y:scroll ;
+}
+.mainContent > ul li{
+  list-style: none;
+  border: 1px solid white;
+  margin: 6px 6px 6px 8px;
+  padding: 6px;
+  border-radius: 8px;
+  background-color: white;
+  width: min-content;
+  box-shadow: 5px 3px 6px 1px #bfcdda;
+}
+#form{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5px;
+}
+#form > button {
+  position: absolute;
+  right: 66px;
+  padding: 10px 16px 10px 16px;
+  border: 1px solid whitesmoke;
+  border-radius: 12px;
+  background-color: white;
+  box-shadow: 6px 4px 6px 1px #bfcdda;
+  cursor: pointer;
+}
+#input{
+  padding-right: 50%;
+  margin: auto;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  padding-left: 13px;
+  border: 1px solid whitesmoke;
+  border-radius: 12px;
+  box-shadow: 6px 4px 6px 1px #bfcdda;
+}
+.add{
+  position: absolute;
+  left: 98px;
+  margin: 5px 0 0 0;
+}
+.add > svg{
+  box-shadow: 4px 5px 6px 1px #bfcdda;
+  border-radius: 15px;
+}
+.mainContent > ul :nth-child(even){
+  background: #fbfbfb99;
+  border-color:black ;
+  position: relative;
+  left: 92%;
+}
