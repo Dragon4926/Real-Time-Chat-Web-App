@@ -2,6 +2,13 @@
 
 This is a real-time chat application built with Node.js, Express.js, Socket.IO, and MongoDB. It allows users to create and join chat rooms, where they can send and receive messages in real-time.
 
+## Demo Video
+
+[![Demo Video](demo_video_thumbnail.png)](RealTimeChatWebAppDEMO.mp4)
+
+Click the thumbnail above to watch the demo video.
+
+
 ## Features
 
 - Create new chat rooms
@@ -20,23 +27,26 @@ This is a real-time chat application built with Node.js, Express.js, Socket.IO, 
 
 ## Installation
 
-1. Clone the repository:
+1. **Clone the repository:**
    ```sh
-    git clone https://github.com/your-username/real-time-chat-app.git
+   git clone https://github.com/your-username/real-time-chat-app.git
 
-2. Install dependencies:
-    ```sh
+2.  **Navigate to the project directory:**
+    ```bash
     cd real-time-chat-app
+3. **Install dependencies:**
+    ```sh
     npm install
-
-3. Set up MongoDB connection:
+    
+4. **Set up MongoDB connection:**
 
 - Create a new MongoDB database and update the connection string in `server.js` or use an existing connection string.
 
-4. Start the server:
+4. **Start the server:**
     ```sh
-    node server.js
-5. Open your web browser and navigate to `http://localhost:3000`.
+    node server.js 
+5. **Open your web browser and navigate to:** 
+`http://localhost:3000`.
 
 ## Usage
 
