@@ -19,11 +19,11 @@ let html2 = ` <ul id="messages"></ul>
             <path d="M12 8V16M16 12L8 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
     </div>
-  <input id="input" autocomplete="off" /><button>Send</button>
+  <input id="input" autocomplete="off" placeholder="type here" /><button>Send</button>
 </form>`;
 
 let html3 = ` <form id="form2" action="/codeCheck">
-<input type="number" id="input2"><button type="submit">Join</button>
+<input type="number" id="input2" placeholder="enter code"><button type="submit">Join</button>
 </form>`;
 window.addEventListener("DOMContentLoaded", () => {
   let create = document.body.getElementsByClassName("create")[0];
