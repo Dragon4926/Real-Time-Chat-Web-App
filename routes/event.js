@@ -11,7 +11,7 @@ const randomNumberGenerator = () => {
 };
 
 async function main() {
-    await mongoose.connect('mongodb://localhost:27017/project');
+    await mongoose.connect(process.env.CONSTR);
 }
 
 main().then(() => {
