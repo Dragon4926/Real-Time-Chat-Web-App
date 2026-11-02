@@ -1,79 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home</title>
-    <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/utility.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <title>Grok Team</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="/css/style.css" />
 </head>
-
 <body>
-    <div class="main">
-        <div class="innerBox">
-            <div class="first">
-                <div class="hamburger margin-left">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#e8e8e8c2"
-                        fill="none">
-                        <path d="M4 4.5L20 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                            stroke-linejoin="round" />
-                        <path d="M4 14.5L20 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                            stroke-linejoin="round" />
-                        <path d="M4 9.5L20 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                            stroke-linejoin="round" />
-                        <path d="M4 19.5L20 19.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                            stroke-linejoin="round" />
-                    </svg>
-                </div>
-                <div class="create margin-left">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#e8e8e8c2"
-                        fill="none">
-                        <path d="M12 8V16M16 12L8 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                            stroke-linejoin="round" />
-                        <path
-                            d="M22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12Z"
-                            stroke="currentColor" stroke-width="1.5" />
-                    </svg>
-                </div>
-                <div class="join margin-left">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#e8e8e8c2"
-                        fill="none">
-                        <path
-                            d="M15 17.625C14.9264 19.4769 13.3831 21.0494 11.3156 20.9988C10.8346 20.9871 10.2401 20.8194 9.05112 20.484C6.18961 19.6769 3.70555 18.3204 3.10956 15.2816C3 14.723 3 14.0944 3 12.8373L3 11.1627C3 9.90561 3 9.27704 3.10956 8.71845C3.70555 5.67963 6.18961 4.32314 9.05112 3.516C10.2401 3.18062 10.8346 3.01293 11.3156 3.00116C13.3831 2.95058 14.9264 4.52305 15 6.37499"
-                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                        <path
-                            d="M10 12H21M10 12C10 11.2998 11.9943 9.99153 12.5 9.5M10 12C10 12.7002 11.9943 14.0085 12.5 14.5"
-                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </div>
-            </div>
-            <div class="second">
-                <header>
-                    <h1>Chat Rooms</h1>
-                    <hr />
-                </header> 
-                
-                <main>
-                </main>
-                <div class="joinExistRoom">
-                   
-                </div>
-            </div>
-            <div class="third">
-                <div class="head">
-                    <div class="joinedroom"></div>
-                    <h1>Your Chats</h1>
-                    <hr/>
-                </div>
-                <div class="mainContent">
-                  
-                </div>
-            </div>
-        </div>
-    </div>
-    <script src="js/script.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-</body>
+  <div class="wallpaper" aria-hidden="true"><i></i><i></i><i></i></div>
 
+  <div class="window" id="app">
+    <div class="traffic" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="ai-edge" aria-hidden="true"><span class="ring"></span><span class="soft"><span class="ring"></span></span></div>
+
+    <aside class="sidebar" id="sidebar" aria-label="Sidebar">
+      <div class="sb-inner">
+        <div class="sb-top"></div>
+        <button class="search" id="searchBtn" type="button">
+          <span class="search-ic"></span><span>Search or jump to…</span><kbd id="kbd">⌘K</kbd>
+        </button>
+        <div class="segmented" id="segmented" role="tablist" aria-label="View">
+          <span class="seg-thumb" aria-hidden="true"></span>
+          <button role="tab" type="button" data-view="team">Team</button>
+          <button role="tab" type="button" data-view="rooms">Rooms</button>
+        </div>
+        <div class="sb-scroll" id="side"></div>
+        <div class="sb-foot">
+          <label class="me-row" for="nameInput">
+            <span id="meAvatar"></span>
+            <input id="nameInput" maxlength="24" placeholder="Your name" autocomplete="off" />
+          </label>
+          <div class="model" id="health" data-state="pending"><i></i><span id="healthText">Connecting to model…</span></div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="toolbar">
+        <button class="icon-btn" id="sidebarBtn" type="button" aria-label="Toggle sidebar" title="Toggle sidebar"></button>
+        <span class="orb live title-orb" id="titleOrb" style="--s:22px" aria-hidden="true"></span>
+        <div class="titles">
+          <h1 id="title">Team</h1>
+          <p id="subtitle"></p>
+        </div>
+        <div class="tb-actions" id="headActions"></div>
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="Appearance"></button>
+        <button class="icon-btn" id="inspectorBtn" type="button" aria-label="Toggle activity panel" title="Activity panel"></button>
+      </header>
+
+      <div class="banner" id="banner" hidden></div>
+
+      <section class="thread" id="teamThread" aria-live="polite"></section>
+      <section class="thread" id="roomThread" aria-live="polite" hidden></section>
+      <button class="jump" id="jumpBtn" type="button" aria-label="Scroll to latest" hidden></button>
+
+      <form class="composer" id="composer" autocomplete="off">
+        <div class="popover" id="mentionPop" role="listbox" hidden></div>
+        <div class="to-row" id="targets"></div>
+        <div class="input-row">
+          <button type="button" class="mention-btn" id="mentionBtn" aria-label="Mention a teammate" title="Mention a teammate"></button>
+          <textarea id="input" rows="1" placeholder="Message the team" aria-label="Message"></textarea>
+          <button type="submit" class="send" id="sendBtn" aria-label="Send"></button>
+        </div>
+      </form>
+    </main>
+
+    <aside class="inspector" id="inspector" aria-label="Activity">
+      <div class="ins-inner">
+        <div class="ins-head"><h2>Activity</h2><span id="insStatus"></span></div>
+        <div class="ins-body" id="insBody"></div>
+      </div>
+    </aside>
+
+    <div class="scrim" id="scrim"></div>
+  </div>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
+  <div class="palette" id="palette" hidden>
+    <div class="palette-box" role="dialog" aria-label="Command palette">
+      <div class="palette-search"><span class="search-ic"></span><input id="paletteInput" placeholder="Search actions, agents, skills and rooms" autocomplete="off" /></div>
+      <div class="palette-list" id="paletteList" role="listbox"></div>
+      <div class="palette-foot"><span><kbd>↑</kbd><kbd>↓</kbd> to move</span><span><kbd>↵</kbd> to open</span><span><kbd>esc</kbd> to close</span></div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/script.js"></script>
+</body>
 </html>

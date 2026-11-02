@@ -1,17 +1,20 @@
 {
   "name": "real-time-chat-app",
-  "version": "1.0.0",
-  "description": "",
+  "version": "2.0.0",
+  "description": "Real-time chat with Grok: a self-evolving team of coworker LLM agents running on locally hosted models",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm start"
+    "start": "node server.js",
+    "test": "node --test \"test/*.test.js\"",
+    "build": "echo \"no build step\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "engines": { "node": ">=20" },
   "dependencies": {
     "body-parser": "^1.20.2",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "mongoose": "^8.3.2",
     "socket.io": "^4.7.5"
