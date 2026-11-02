@@ -101,7 +101,9 @@
     const nested = ev.depth > 0;
     const block = h("div", { class: `call${nested ? " nested" : ""}`, style: `--c:${agentColor(ev.agent)}` });
     if (nested) block.append(h("div", { class: "call-head" }, h("span", { class: "dot", style: `--c:${agentColor(ev.agent)}` }), h("b", {}, agentTitle(ev.agent)), h("span", { class: "task", text: `asked by ${agentTitle(ev.from)}: ${ev.task}` })));
-    const c = { block, seg: null, raw: "", tools: new Map() };
+    const typing = h("span", { class: "typing", "aria-label": "working" }, h("i"), h("i"), h("i"));
+    block.append(typing);
+    const c = { block, seg: null, raw: "", tools: new Map(), typing };
     run.calls.set(ev.callId, c);
     run.body.append(block);
     return c;
@@ -132,9 +134,9 @@
     const c = ev.callId ? run.calls.get(ev.callId) : null;
     switch (ev.type) {
       case "start": callBlock(run, ev); break;
-      case "token": if (c) { if (!c.seg) { c.seg = h("div", { class: "text" }); c.raw = ""; c.block.append(c.seg); } c.raw += ev.text; renderMd(c.seg, c.raw); } break;
+      case "token": if (c) { c.typing.remove(); if (!c.seg) { c.seg = h("div", { class: "text" }); c.raw = ""; c.block.append(c.seg); } c.raw += ev.text; renderMd(c.seg, c.raw); } break;
       case "tool_call": if (c) {
-        c.seg = null;
+        c.seg = null; c.typing.remove();
         const args = Object.values(ev.args || {}).map((v) => (typeof v === "string" ? v : JSON.stringify(v))).join(" ").slice(0, 120);
         const out = h("pre", { text: "…" });
         const d = h("details", { class: "tool", "data-state": "running" }, h("summary", {}, h("span", { class: "tn" }, ev.tool), h("span", { class: "args" }, args)), out);
@@ -158,6 +160,7 @@
   }
 
   function finishRun(ev, run) {
+    run.card.querySelectorAll(".typing").forEach((n) => n.remove());
     run.card.dataset.state = ev.outcome === "ok" ? "done" : ev.outcome === "aborted" ? "stopped" : "error";
     run.label.textContent = ev.outcome === "ok" ? `done · ${(ev.stats.toolCalls)} tool calls` : ev.outcome === "aborted" ? "stopped" : "failed";
     run.stop.remove();
@@ -232,7 +235,7 @@
     el.team.replaceChildren(h("div", { class: "hello" },
       h("h2", {}, "A team of agents on your own machine."),
       h("p", {}, "Grok plans, then asks the researcher, coder, writer and critic for help. They can use tools, talk to each other, and keep the skills that work."),
-      h("div", { class: "chips" }, ex.map((t) => h("button", { class: "chip", onclick: () => { el.input.value = t; el.input.focus(); } }, t)))));
+      h("div", { class: "chips" }, ex.map((t) => h("button", { class: "chip", onclick: () => { el.input.value = t; el.input.dispatchEvent(new Event("input")); el.input.focus(); } }, t)))));
   }
 
   function setView(v) {
@@ -256,6 +259,7 @@
       if (room) el.actions.append(h("button", { class: "btn small", onclick: async (e) => { try { await navigator.clipboard.writeText(room); e.target.textContent = "Copied"; setTimeout(() => (e.target.textContent = "Copy code"), 1200); } catch { /* clipboard blocked */ } } }, "Copy code"));
     }
     renderTargets();
+    for (const n of [el.side, thread()]) { n.classList.remove("enter"); void n.offsetWidth; n.classList.add("enter"); }
     loadSide();
   }
 
@@ -278,7 +282,9 @@
   function toast(text) { el.banner.hidden = false; el.banner.textContent = text; setTimeout(() => { if (el.banner.textContent === text) refreshHealth(); }, 3500); }
 
   // ---------- composer ----------
-  el.input.addEventListener("input", () => { el.input.style.height = "auto"; el.input.style.height = `${Math.min(el.input.scrollHeight, 160)}px`; });
+  const syncSend = () => { el.send.disabled = !el.input.value.trim(); };
+  syncSend();
+  el.input.addEventListener("input", () => { syncSend(); el.input.style.height = "auto"; el.input.style.height = `${Math.min(el.input.scrollHeight, 160)}px`; });
   el.input.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); el.form.requestSubmit(); } });
   el.form.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -292,7 +298,7 @@
     } else if (room) {
       socket.emit("chat message", { text });
     }
-    el.input.value = ""; el.input.style.height = "auto";
+    el.input.value = ""; el.input.style.height = "auto"; syncSend();
     stick(thread());
   });
 

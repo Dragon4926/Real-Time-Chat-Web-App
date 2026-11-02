@@ -7,11 +7,12 @@
   <title>Grok Team</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;650&family=Geist+Mono:wght@400;500&display=swap" />
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
   <div class="app" id="app">
+    <div class="traffic" aria-hidden="true"><i></i><i></i><i></i></div>
     <nav class="rail" aria-label="Views">
       <div class="mark" aria-hidden="true">G</div>
       <button class="rail-btn" data-view="team" aria-label="Team" title="Team">
@@ -47,7 +48,7 @@
         <div class="targets" id="targets"></div>
         <div class="input-row">
           <textarea id="input" rows="1" placeholder="Message the team" aria-label="Message"></textarea>
-          <button type="submit" class="send" id="sendBtn">Send</button>
+          <button type="submit" class="send" id="sendBtn" aria-label="Send"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></svg></button>
         </div>
       </form>
     </main>
