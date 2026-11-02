@@ -2,7 +2,7 @@
    Layout: sidebar (vibrancy) | conversation | activity inspector (vibrancy). One accent: system blue.
    Agents are squircle avatars in their own colour; people are round. */
 :root {
-  --wall: #dde4f1; --wall-a: #8fb1ff; --wall-b: #f2a7cb; --wall-c: #ffd39b;
+  --wall: #e3e2f3; --wall-a: #93b4ff; --wall-b: #d9a6ff; --wall-c: #ffc2a6;
   --window: rgba(250, 251, 253, 0.74);
   --vibrancy: rgba(240, 242, 247, 0.5);
   --surface: rgba(255, 255, 255, 0.92);
@@ -30,10 +30,11 @@
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --spring: cubic-bezier(0.34, 1.4, 0.64, 1);
   --sb: 264px; --ins: 304px;
+  --ai-1: #3d7bff; --ai-2: #8b5cf6; --ai-3: #ec4899; --ai-4: #f59e0b; --ai-glow: rgba(139, 92, 246, 0.35);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --wall: #090b12; --wall-a: #2c42a0; --wall-b: #6a2c78; --wall-c: #135e69;
+    --wall: #08080f; --wall-a: #2a3aa6; --wall-b: #5d2a8c; --wall-c: #7a2a55;
     --window: rgba(28, 29, 34, 0.76); --vibrancy: rgba(40, 41, 48, 0.46); --surface: rgba(30, 31, 36, 0.94); --raised: #2c2d33;
     --pop: rgba(44, 45, 52, 0.86); --seg: #5d5e66; --sunken: rgba(235, 235, 245, 0.08); --hover: rgba(235, 235, 245, 0.1);
     --ink: #f5f5f7; --muted: #a2a2aa; --faint: #6f6f78; --line: rgba(235, 235, 245, 0.1); --line-strong: rgba(235, 235, 245, 0.18);
@@ -42,11 +43,12 @@
     --win-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.12), 0 30px 90px rgba(0, 0, 0, 0.65);
     --card-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.07), 0 6px 20px rgba(0, 0, 0, 0.3);
     --pop-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.14), 0 24px 60px rgba(0, 0, 0, 0.55);
+    --ai-1: #5b9bff; --ai-2: #a78bfa; --ai-3: #f472b6; --ai-4: #fbbf24; --ai-glow: rgba(167, 139, 250, 0.45);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --wall: #090b12; --wall-a: #2c42a0; --wall-b: #6a2c78; --wall-c: #135e69;
+  --wall: #08080f; --wall-a: #2a3aa6; --wall-b: #5d2a8c; --wall-c: #7a2a55;
   --window: rgba(28, 29, 34, 0.76); --vibrancy: rgba(40, 41, 48, 0.46); --surface: rgba(30, 31, 36, 0.94); --raised: #2c2d33;
   --pop: rgba(44, 45, 52, 0.86); --seg: #5d5e66; --sunken: rgba(235, 235, 245, 0.08); --hover: rgba(235, 235, 245, 0.1);
   --ink: #f5f5f7; --muted: #a2a2aa; --faint: #6f6f78; --line: rgba(235, 235, 245, 0.1); --line-strong: rgba(235, 235, 245, 0.18);
@@ -55,6 +57,7 @@
   --win-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.12), 0 30px 90px rgba(0, 0, 0, 0.65);
   --card-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.07), 0 6px 20px rgba(0, 0, 0, 0.3);
   --pop-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.14), 0 24px 60px rgba(0, 0, 0, 0.55);
+  --ai-1: #5b9bff; --ai-2: #a78bfa; --ai-3: #f472b6; --ai-4: #fbbf24; --ai-glow: rgba(167, 139, 250, 0.45);
   color-scheme: dark;
 }
 
@@ -289,7 +292,7 @@ details.skill.retired .skill-name { color: var(--faint); text-decoration: line-t
 .run[data-state="working"] .status-label { color: var(--accent); }
 .run[data-state="done"] .status-label { color: var(--good); }
 .run[data-state="error"] .status-label { color: var(--bad); }
-.run[data-state="working"]::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; padding: 1px; background: conic-gradient(from var(--angle), transparent 0 70%, var(--accent) 85%, transparent 100%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: orbit 2.4s linear infinite; opacity: 0.8; }
+.run[data-state="working"]::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; padding: 1px; background: conic-gradient(from var(--angle), transparent 0 52%, var(--ai-1) 66%, var(--ai-2) 76%, var(--ai-3) 86%, var(--ai-4) 94%, transparent 100%); padding: 1.5px; -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: orbit 2.4s linear infinite; opacity: 0.8; }
 @property --angle { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
 @keyframes orbit { to { --angle: 360deg; } }
 .stop { color: var(--muted); }
@@ -483,3 +486,85 @@ details.skill.retired .skill-name { color: var(--faint); text-decoration: line-t
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* ===================== AI layer =====================
+   The iridescent palette marks only AI surfaces: Grok's orb, thinking, streaming, learning.
+   Everyday controls keep the system blue. */
+.ai-text { background: linear-gradient(100deg, var(--ai-1), var(--ai-2) 38%, var(--ai-3) 68%, var(--ai-4)); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: ai-pan 8s ease-in-out infinite alternate; }
+@keyframes ai-pan { to { background-position: 100% 0; } }
+
+/* Grok's orb */
+@property --orb-a { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+.orb {
+  --s: 28px; position: relative; display: inline-block; width: var(--s); height: var(--s); border-radius: 50%; flex: none; isolation: isolate;
+  background:
+    radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 30%),
+    radial-gradient(circle at 70% 78%, color-mix(in srgb, var(--ai-4) 85%, transparent), transparent 55%),
+    conic-gradient(from var(--orb-a), var(--ai-1), var(--ai-2), var(--ai-3), var(--ai-4), var(--ai-1));
+  box-shadow: inset 0 0 calc(var(--s) * 0.16) rgba(255, 255, 255, 0.6), inset 0 calc(var(--s) * -0.08) calc(var(--s) * 0.2) rgba(40, 0, 80, 0.25), 0 calc(var(--s) * 0.1) calc(var(--s) * 0.4) var(--ai-glow);
+  animation: orb-spin 10s linear infinite;
+}
+.orb::after { content: ""; position: absolute; inset: -28%; z-index: -1; border-radius: 50%; background: conic-gradient(from var(--orb-a), var(--ai-1), var(--ai-2), var(--ai-3), var(--ai-4), var(--ai-1)); filter: blur(calc(var(--s) * 0.32)); opacity: 0.28; transition: opacity 0.6s var(--ease); animation: orb-spin 10s linear infinite reverse; }
+.orb.working, .ai-busy .orb.live { animation-duration: 2.4s; }
+.orb.working::after, .ai-busy .orb.live::after { opacity: 0.8; animation: orb-spin 2.4s linear infinite reverse, orb-breathe 1.8s ease-in-out infinite; }
+@keyframes orb-spin { to { --orb-a: 360deg; } }
+@keyframes orb-breathe { 50% { transform: scale(1.18); opacity: 0.5; } }
+.hero-orb { padding: 10px; margin: 0 0 6px -10px; animation: orb-in 0.9s var(--spring) both; }
+.hero-orb .orb { animation: orb-spin 10s linear infinite, orb-float 6s ease-in-out infinite; }
+@keyframes orb-float { 50% { transform: translateY(-5px); } }
+@keyframes orb-in { from { opacity: 0; transform: scale(0.5); filter: blur(8px); } }
+.title-orb { margin-left: 4px; }
+.hello h2 { font-size: 34px; }
+.ready { display: flex; align-items: center; gap: 10px; margin-top: 6px; font-size: 12.5px; color: var(--muted); }
+.ready .avatar-stack { margin: 0; }
+.ready .avatar-stack > * { box-shadow: 0 0 0 2px var(--raised); }
+.ready .avatar-stack > * + * { margin-left: -5px; }
+
+/* Apple Intelligence-style edge glow while the team is working */
+@property --edge-a { syntax: "<angle>"; initial-value: 0deg; inherits: true; }
+.ai-edge { position: absolute; inset: 0; z-index: 20; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity 0.9s var(--ease); animation: edge-spin 5s linear infinite; }
+.ai-busy .ai-edge { opacity: 1; }
+.ai-edge .ring { position: absolute; inset: 0; border-radius: inherit; padding: 2px; background: conic-gradient(from var(--edge-a), var(--ai-1), var(--ai-2), var(--ai-3), var(--ai-4), var(--ai-1)); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+.ai-edge .soft { position: absolute; inset: 0; border-radius: inherit; filter: blur(14px); opacity: 0.75; }
+.ai-edge .soft .ring { padding: 9px; }
+@keyframes edge-spin { to { --edge-a: 360deg; } }
+
+/* thinking + streaming */
+.thinking { display: inline-flex; align-items: center; gap: 6px; padding: 3px 0; font-size: 12.5px; font-weight: 500; color: var(--ai-2); }
+.thinking .ic { animation: sparkle-spin 2.4s var(--ease) infinite; }
+.thinking span { background: linear-gradient(90deg, var(--muted) 0 30%, var(--ai-1) 40%, var(--ai-2) 47%, var(--ai-3) 54%, var(--muted) 64% 100%); background-size: 260% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shimmer 1.9s linear infinite; }
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: 0% 0; } }
+@keyframes sparkle-spin { 0% { transform: rotate(0) scale(1); } 50% { transform: rotate(90deg) scale(0.8); } 100% { transform: rotate(180deg) scale(1); } }
+.caret { display: inline-block; width: 0.5em; height: 1.05em; margin-left: 2px; vertical-align: -0.17em; border-radius: 3px; background: linear-gradient(var(--ai-1), var(--ai-2), var(--ai-3)); box-shadow: 0 0 10px var(--ai-glow); animation: caret 1s ease-in-out infinite; }
+@keyframes caret { 50% { opacity: 0.25; } }
+.text p:last-child:not(:has(.caret)), .text li:last-child { animation: none; }
+
+/* composer: iridescent focus ring */
+.input-row { position: relative; }
+.input-row::before { content: ""; position: absolute; inset: -1.5px; border-radius: 21.5px; padding: 1.5px; pointer-events: none; background: conic-gradient(from var(--edge-a), var(--ai-1), var(--ai-2), var(--ai-3), var(--ai-4), var(--ai-1)); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0; transition: opacity 0.4s var(--ease); animation: edge-spin 6s linear infinite; }
+.input-row:focus-within { box-shadow: 0 0 0 4px color-mix(in srgb, var(--ai-2) 16%, transparent), 0 8px 30px var(--ai-glow); }
+.input-row:focus-within::before, .ai-busy .input-row::before { opacity: 1; }
+.send { background: linear-gradient(135deg, var(--ai-1), var(--ai-2) 55%, var(--ai-3)); box-shadow: 0 2px 10px var(--ai-glow); }
+.send:disabled { background: var(--faint); box-shadow: none; }
+.mention-btn:hover { color: var(--ai-2); }
+
+/* learning and AI accents */
+.learned { background: linear-gradient(90deg, color-mix(in srgb, var(--ai-1) 13%, transparent), color-mix(in srgb, var(--ai-3) 13%, transparent)); color: var(--ai-2); }
+.toast.ai .toast-icon { background: linear-gradient(140deg, var(--ai-1), var(--ai-2) 50%, var(--ai-3)); box-shadow: 0 4px 14px var(--ai-glow); }
+.skill-icon.ai { background: linear-gradient(140deg, var(--ai-1), var(--ai-2), var(--ai-3)); color: #fff; }
+.token-auto { background: linear-gradient(140deg, var(--ai-1), var(--ai-2), var(--ai-3)); color: #fff; }
+.token[aria-pressed="true"] .token-auto { box-shadow: 0 0 0 1.5px var(--accent-ink); }
+.suggest { position: relative; }
+.suggest::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none; background: linear-gradient(130deg, var(--ai-1), var(--ai-2), var(--ai-3), var(--ai-4)); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0; transition: opacity 0.35s var(--ease); }
+.suggest:hover::before { opacity: 1; }
+.suggest:hover { box-shadow: 0 10px 30px var(--ai-glow); }
+.pill.ai, .pill.working { background: linear-gradient(90deg, color-mix(in srgb, var(--ai-1) 16%, transparent), color-mix(in srgb, var(--ai-3) 16%, transparent)); color: var(--ai-2); }
+.run[data-state="working"] .status-label { color: var(--ai-2); }
+.agent-row .working-label { color: var(--ai-2); }
+.st1 { stop-color: var(--ai-1); } .st2 { stop-color: var(--ai-2); } .st3 { stop-color: var(--ai-3); } .st4 { stop-color: var(--ai-4); }
+.g-shine { fill: rgba(255, 255, 255, 0.55); }
+.g-edge.live { stroke: var(--ai-2); }
+.orb.working + .txt .working-label { color: var(--ai-2); }
+
+@media (max-width: 760px) { .hello h2 { font-size: 27px; } .ai-edge { border-radius: 0; } }
+@media (prefers-reduced-motion: reduce) { .ai-busy .ai-edge { opacity: 0.6; } }

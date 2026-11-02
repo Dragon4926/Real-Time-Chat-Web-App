@@ -15,12 +15,13 @@
 
   <div class="window" id="app">
     <div class="traffic" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="ai-edge" aria-hidden="true"><span class="ring"></span><span class="soft"><span class="ring"></span></span></div>
 
     <aside class="sidebar" id="sidebar" aria-label="Sidebar">
       <div class="sb-inner">
         <div class="sb-top"></div>
         <button class="search" id="searchBtn" type="button">
-          <span class="search-ic"></span><span>Search</span><kbd id="kbd">⌘K</kbd>
+          <span class="search-ic"></span><span>Search or jump to…</span><kbd id="kbd">⌘K</kbd>
         </button>
         <div class="segmented" id="segmented" role="tablist" aria-label="View">
           <span class="seg-thumb" aria-hidden="true"></span>
@@ -41,6 +42,7 @@
     <main class="main">
       <header class="toolbar">
         <button class="icon-btn" id="sidebarBtn" type="button" aria-label="Toggle sidebar" title="Toggle sidebar"></button>
+        <span class="orb live title-orb" id="titleOrb" style="--s:22px" aria-hidden="true"></span>
         <div class="titles">
           <h1 id="title">Team</h1>
           <p id="subtitle"></p>

@@ -108,6 +108,7 @@
   function avatar(name, { size = 28, agent = false, presence = false } = {}) {
     const isAgent = agent && !!agentDef(name);
     const label = isAgent ? agentTitle(name) : String(name || "?");
+    if (isAgent && name === "grok") return h("span", { class: "orb", style: `--s:${size}px`, "data-agent": presence ? name : null, title: label, "aria-hidden": "true" });
     return h("span", { class: `avatar${isAgent ? " agent" : ""}`, style: `--c:${colorOf(name)};--s:${size}px`, "data-agent": isAgent && presence ? name : null, title: label, "aria-hidden": "true" }, (label.trim()[0] || "?").toUpperCase());
   }
   const fmtDur = (ms) => (ms < 60000 ? `${(ms / 1000).toFixed(1)}s` : `${Math.floor(ms / 60000)}m ${String(Math.floor(ms / 1000) % 60).padStart(2, "0")}s`);
@@ -213,12 +214,19 @@
   const dirty = new Map(); // text segment -> latest raw markdown (segments can be closed before the frame runs)
   let rafPending = false;
   function scheduleRender(c) {
-    dirty.set(c.seg, c.raw);
+    dirty.set(c.seg, { raw: c.raw, c });
     if (rafPending) return;
     rafPending = true;
     requestAnimationFrame(() => {
       rafPending = false;
-      for (const [seg, raw] of dirty) renderMd(seg, raw);
+      for (const [seg, { raw, c }] of dirty) {
+        renderMd(seg, raw);
+        if (!c.done && c.seg === seg) {
+          let host = seg.lastElementChild;
+          while (host && /^(UL|OL)$/.test(host.tagName)) host = host.lastElementChild;
+          (host && /^(P|LI|H4)$/.test(host.tagName) ? host : seg).append(h("span", { class: "caret", "aria-hidden": "true" }));
+        }
+      }
       dirty.clear();
       stick(thread());
     });
@@ -251,7 +259,7 @@
         h("div", { class: "call-head" }, avatar(ev.agent, { size: 20, agent: true, presence: true }), h("b", {}, agentTitle(ev.agent)), h("span", {}, `for ${agentTitle(ev.from)}`), h("span", { class: "done-mark" }, icon("check", 14, 2.2))),
         h("div", { class: "call-task", text: ev.task }));
     }
-    const typing = h("span", { class: "typing", "aria-label": "Thinking" }, h("i"), h("i"), h("i"));
+    const typing = h("span", { class: "thinking", role: "status" }, icon("sparkle", 13, 2), h("span", {}, `${agentTitle(ev.agent)} is thinking`));
     block.append(typing);
     const c = { block, seg: null, raw: "", tools: new Map(), typing, agent: ev.agent, done: false };
     run.calls.set(ev.callId, c);
@@ -284,7 +292,7 @@
         return;
       case "tool_call": {
         if (!c) break;
-        c.typing.remove(); c.seg = null;
+        c.typing.remove(); c.seg?.querySelector(".caret")?.remove(); c.seg = null;
         const info = toolInfo(ev.tool, ev.args);
         const time = h("span", { class: "step-time" });
         const out = h("pre", { class: "step-out" }, "Running…");
@@ -300,13 +308,13 @@
       case "tool_result": {
         const t = c?.tools.get(ev.id);
         if (t) { t.d.dataset.state = ev.error ? "error" : "done"; t.out.textContent = ev.result || "(no output)"; const took = Date.now() - t.t0; t.time.textContent = took >= 150 ? fmtDur(took) : ""; if (ev.error) run.stats.errors++; }
-        if (c && !c.done) c.block.append(c.typing);
+        if (c && !c.done) { c.typing.lastChild.textContent = `${agentTitle(c.agent)} is working`; c.block.append(c.typing); }
         break;
       }
       case "a2a": if (["ask", "spawn", "message"].includes(ev.kind)) run.stats.handoffs++; break;
       case "inbox": if (c) c.block.append(h("div", { class: "inbox" }, icon("bubble", 13), h("span", {}, `${agentTitle(ev.from)}: ${ev.text}`))); break;
       case "blackboard": run.blackboard.set(ev.key, ev.by); break;
-      case "done": if (c) { c.done = true; c.typing.remove(); c.block.dataset.state = "done"; } break;
+      case "done": if (c) { c.done = true; c.typing.remove(); c.seg?.querySelector(".caret")?.remove(); c.block.dataset.state = "done"; } break;
       case "error": if (c) { c.done = true; c.typing.remove(); c.block.dataset.state = "error"; } break;
       case "learned": onLearned(run, ev); break;
       case "run_end": finishRun(run, ev); break;
@@ -327,7 +335,7 @@
     const fb = $(".fb", run.foot);
     if (fb) fb.after(chip); else run.foot.prepend(chip);
     const list = words.join(", ");
-    notify({ title: "The team learned something", body: `${list[0].toUpperCase()}${list.slice(1)}.${ev.summary ? ` ${ev.summary}` : ""}`, icon: "sparkle", tone: "good" });
+    notify({ title: "The team learned something", body: `${list[0].toUpperCase()}${list.slice(1)}.${ev.summary ? ` ${ev.summary}` : ""}`, icon: "sparkle", tone: "ai" });
     refreshTeamData();
   }
 
@@ -336,7 +344,7 @@
     run.ended = Date.now();
     run.nodes = ev.nodes || run.nodes;
     run.card.dataset.state = run.state;
-    run.card.querySelectorAll(".typing").forEach((n) => n.remove());
+    run.card.querySelectorAll(".thinking, .caret").forEach((n) => n.remove());
     run.stop.remove();
     run.label.textContent = { done: "Done", stopped: "Stopped", error: "Failed" }[run.state];
     run.timeEl.textContent = fmtDur(run.ended - run.started);
@@ -368,6 +376,9 @@
     const working = new Set();
     for (const r of runs.values()) if (r.state === "working") for (const n of r.nodes) if (n.status === "running") working.add(n.agent);
     $$("[data-agent]").forEach((n) => n.classList.toggle("working", working.has(n.dataset.agent)));
+    const busy = [...runs.values()].some((r) => r.state === "working");
+    document.body.classList.toggle("ai-busy", busy);
+    $("#titleOrb").title = busy ? "The team is working" : "The team is ready";
   }
 
   // ---------- inspector ----------
@@ -399,7 +410,7 @@
     if (run.nodes.length) secs.push(h("section", { class: "ins-sec" }, h("h3", {}, "Who is working on it"), h("div", { class: "graph-card" }, graphSvg(run.nodes))));
     if (run.blackboard.size) secs.push(h("section", { class: "ins-sec" }, h("h3", {}, "Shared blackboard"), h("div", { class: "kv" }, [...run.blackboard].map(([k, by]) => h("div", { class: "row" }, h("span", { class: "tile", style: "width:20px;height:20px" }, icon("layers", 12)), h("span", { class: "name" }, k), h("span", { class: "meta" }, agentTitle(by)))))));
     if (run.skills.size) secs.push(h("section", { class: "ins-sec" }, h("h3", {}, "Skills in use"), h("div", { class: "chips" }, [...run.skills].map(([id, name]) => h("button", { type: "button", class: "pill", onclick: () => openSkill(id) }, icon("sparkle", 11), name)))));
-    if (run.learned.length) secs.push(h("section", { class: "ins-sec" }, h("h3", {}, "Learned"), h("div", { class: "chips" }, run.learned.map((w) => h("span", { class: "pill done" }, w)))));
+    if (run.learned.length) secs.push(h("section", { class: "ins-sec" }, h("h3", {}, "Learned"), h("div", { class: "chips" }, run.learned.map((w) => h("span", { class: "pill ai" }, icon("sparkle", 11), w)))));
     el.insBody.replaceChildren(...secs);
   }
 
@@ -410,7 +421,8 @@
     const rowH = 50, colW = 30, padX = 24, padY = 26, W = 272;
     const H = padY * 2 + Math.max(0, order.length - 1) * rowH;
     const pos = new Map(order.map(({ n, depth }, i) => [n.id, { x: padX + depth * colW, y: padY + i * rowH }]));
-    const root = sv("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": `Call graph with ${order.length} steps` });
+    const root = sv("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": `Call graph with ${order.length} steps` },
+      sv("defs", {}, sv("linearGradient", { id: "g-ai", x1: "0", y1: "0", x2: "1", y2: "1" }, sv("stop", { offset: "0", class: "st1" }), sv("stop", { offset: ".4", class: "st2" }), sv("stop", { offset: ".75", class: "st3" }), sv("stop", { offset: "1", class: "st4" }))));
     for (const { n } of order) {
       if (!n.parent || !pos.has(n.parent)) continue;
       const p = pos.get(n.parent); const q = pos.get(n.id);
@@ -420,9 +432,10 @@
       const { x, y } = pos.get(n.id);
       const color = colorOf(n.agent);
       const g = sv("g", { class: "g-node", style: `animation-delay:${i * 40}ms` });
-      if (n.status === "running") g.append(sv("rect", { class: "g-ring", x: x - 17, y: y - 17, width: 34, height: 34, rx: 11, stroke: color }));
-      g.append(sv("rect", { x: x - 14, y: y - 14, width: 28, height: 28, rx: 9, fill: color }));
-      g.append(sv("text", { class: "g-initial", x, y }, (agentTitle(n.agent)[0] || "?").toUpperCase()));
+      const isGrok = n.agent === "grok";
+      if (n.status === "running") g.append(isGrok ? sv("circle", { class: "g-ring", cx: x, cy: y, r: 17, stroke: "url(#g-ai)" }) : sv("rect", { class: "g-ring", x: x - 17, y: y - 17, width: 34, height: 34, rx: 11, stroke: color }));
+      if (isGrok) g.append(sv("circle", { cx: x, cy: y, r: 14, fill: "url(#g-ai)" }), sv("circle", { cx: x - 4, cy: y - 5, r: 5, class: "g-shine" }));
+      else g.append(sv("rect", { x: x - 14, y: y - 14, width: 28, height: 28, rx: 9, fill: color }), sv("text", { class: "g-initial", x, y }, (agentTitle(n.agent)[0] || "?").toUpperCase()));
       const maxChars = Math.max(10, 30 - depth * 4);
       const status = { running: "working", done: "done", failed: "failed", stopped: "stopped" }[n.status] || n.status;
       const task = n.parent ? ` · ${n.task.length > maxChars ? `${n.task.slice(0, maxChars - 1)}…` : n.task}` : "";
@@ -461,7 +474,7 @@
       if (s.versions?.length > 1) acts.push(h("button", { type: "button", class: "btn tiny", onclick: () => skillAction(s, "rollback") }, icon("undo", 12), " Revert"));
       if (s.status === "active") acts.push(h("button", { type: "button", class: "btn tiny danger", onclick: () => skillAction(s, "retire") }, "Retire"));
       return h("details", { class: `skill${s.status === "retired" ? " retired" : ""}`, "data-skill": s.id, open: open.has(s.id) },
-        h("summary", {}, h("span", { class: "skill-icon" }, icon(s.source === "seed" ? "leaf" : "sparkle", 12, 1.9)), h("span", { class: "skill-name" }, s.name), h("span", { class: "ver" }, `v${s.version}`)),
+        h("summary", {}, h("span", { class: `skill-icon${s.source === "seed" ? "" : " ai"}` }, icon(s.source === "seed" ? "leaf" : "sparkle", 12, 1.9)), h("span", { class: "skill-name" }, s.name), h("span", { class: "ver" }, `v${s.version}`)),
         h("div", { class: "skill-detail" },
           h("p", { class: "skill-desc" }, s.description),
           h("div", { class: "winbar", title: decided ? `${pct}% helpful` : "No ratings yet" }, h("div", { class: "bar" }, h("span", { style: `--w:${pct}%` })), h("small", {}, `${s.uses} uses · ${s.wins} helpful · ${s.losses} not`)),
@@ -574,10 +587,12 @@
       { agent: "grok", icon: "layers", title: "Plan", text: "Plan a weekend in Lisbon and split the research across the team" },
     ];
     el.team.replaceChildren(h("div", { class: "hello" },
-      h("div", { class: "avatar-stack" }, agents.map((a) => avatar(a.name, { size: 38, agent: true, presence: true }))),
+      h("div", { class: "hero-orb" }, h("span", { class: "orb live", style: "--s:76px", "aria-hidden": "true" })),
       h("p", { class: "eyebrow" }, `${greet}${named}`),
-      h("h2", {}, "What should the team work on?"),
+      h("h2", {}, "What should ", h("span", { class: "ai-text" }, "the team"), " work on?"),
       h("p", { class: "lede" }, "Grok plans the work and brings in the researcher, coder, writer and critic. They use tools, check each other's work, and keep the skills that help."),
+      h("div", { class: "ready" }, h("span", { class: "avatar-stack" }, agents.map((a) => avatar(a.name, { size: 22, agent: true, presence: true }))),
+        h("span", {}, `${agents.length} agents ready`, health?.model ? ` · running on ${health.model}` : "", " · learns as it goes")),
       h("div", { class: "suggest-grid" }, ideas.map((c) => h("button", { type: "button", class: "suggest", style: `--c:${colorOf(c.agent)}`, onclick: () => { el.input.value = c.text; syncInput(); el.input.focus(); } },
         h("span", { class: "suggest-icon" }, icon(c.icon, 17)), h("span", { class: "suggest-title" }, c.title), h("span", { class: "suggest-text" }, c.text))))));
   }
